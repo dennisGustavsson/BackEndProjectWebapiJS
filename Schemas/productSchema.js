@@ -9,6 +9,9 @@ const productSchema = mongoose.Schema({
 	rating: { type: Number },
 	price: { type: Number, required: true },
 	imageName: { type: String },
+},
+{
+	versionKey: false // stops from adding __v: to a new product
 });
 
 module.exports = mongoose.model("products", productSchema);

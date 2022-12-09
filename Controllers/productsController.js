@@ -24,10 +24,9 @@ const productSchema = require("../Schemas/productSchema"); //istället för simu
 //! POST - create user - http://localhost:5000/api/products
 
 controller.route("/").get(async (req, res) => {
-	const products = []
+	const products = [];
 	const list = await productSchema.find();
-	if(list) {
-		
+	if (list) {
 		for (let product of list) {
 			products.push({
 				articleNumber: product._id,
@@ -50,8 +49,8 @@ controller.route("/:tag").get(async (req, res) => {
 	const list = await productSchema.find({ tag: req.params.tag });
 	const products = [];
 
-	if(list) {
-		for(let product of list) {
+	if (list) {
+		for (let product of list) {
 			products.push({
 				articleNumber: product._id,
 				name: product.name,
@@ -60,16 +59,18 @@ controller.route("/:tag").get(async (req, res) => {
 				description: product.description,
 				rating: product.rating,
 				price: product.price,
-				imageName: product.imageName
-			})
+				imageName: product.imageName,
+			});
 		}
 		res.status(200).json(products);
 	} else {
 		res.status(404).json();
 	}
 });
-controller.route('/:tag/:limit').get(async(req,res) => {
-	const list = await productSchema.find({ tag: req.params.tag }).limit(req.params.limit);
+controller.route("/:tag/:limit").get(async (req, res) => {
+	const list = await productSchema
+		.find({ tag: req.params.tag })
+		.limit(req.params.limit);
 	const products = [];
 
 	if (list) {
@@ -89,10 +90,10 @@ controller.route('/:tag/:limit').get(async(req,res) => {
 	} else {
 		res.status(404).json();
 	}
-})
+});
 controller.route("/product/details/:articleNumber").get(async (req, res) => {
-	const product = await productSchema.findById(req.params.articleNumber)
-	if(product) {
+	const product = await productSchema.findById(req.params.articleNumber);
+	if (product) {
 		res.status(200).json({
 			articleNumber: product._id,
 			name: product.name,
@@ -103,14 +104,83 @@ controller.route("/product/details/:articleNumber").get(async (req, res) => {
 			price: product.price,
 			imageName: product.imageName,
 		});
-		
 	} else {
 		res.status(404).json();
 	}
 });
 
-
 //secured routes (update, delete, create)
+
+controller.route("/").post(async (req, res) => {
+	const { name, tag, category, description, rating, price, imageName } =
+		req.body;
+	if (!name || !price) {
+		res.status(400).json({ text: "Name and price is required" });
+	}
+	const productExists = await productSchema.findOne({ name });
+	if (productExists) {
+		res
+			.status(409)
+			.json("A product with this name already exist in the database..");
+	} else {
+		const product = await productSchema.create({
+			name,
+			tag,
+			category,
+			rating,
+			price,
+			description,
+			imageName,
+		});
+		if (product) {
+			res.status(201).json(product);
+		} else {
+			res.status(400).json("Something went wrong");
+		}
+	}
+});
+controller.route("/product/details/:articleNumber").put(async (req, res) => {
+	const item = await productSchema.findById(req.params.articleNumber)
+
+
+	if (!item) {
+		res.status(400).json("Didt find any article number");
+	} else {
+		
+		await productSchema.findOneAndUpdate({_id: item._id},{
+			name: req.body.name,
+			tag: req.body.tag,
+			category: req.body.category,
+			rating: req.body.rating,
+			price: req.body.price,
+			description: req.body.description,
+			imageName: req.body.imageName,
+		});
+		res.status(204).json(item)
+	}
+});
+
+controller.route("/product/details/:articleNumber").delete(async (req, res) => {
+	if (!req.params.articleNumber) {
+		res.status(400).json("Didt find any article number");
+	} else {
+		const item = productSchema.findById(req.params.articleNumber);
+		if (item) {
+			await productSchema.deleteOne(item);
+			res
+				.status(200)
+				.json(
+					`The product (${req.params.articleNumber})  is now deleted from the database..`
+				);
+		} else {
+			res
+				.status(404)
+				.json(
+					`A product with article number ${req.params.articleNumber} was not found`
+				);
+		}
+	}
+});
 
 /* controller
 	.route("/")
