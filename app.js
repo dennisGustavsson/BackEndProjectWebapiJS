@@ -17,6 +17,8 @@ app.use(bodyParser.json()); //! tar emot json-delar, går även använda .text o
 
 const productsController = require("./Controllers/productsController");
 app.use("/api/products", productsController); //! endpoint plus controller
+const contactFormController = require('./Controllers/contactFormController')
+app.use("/api/contactform", contactFormController);
 
 //! startar upp apin..
 mongodb();
