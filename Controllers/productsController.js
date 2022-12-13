@@ -118,30 +118,33 @@ controller.route("/product/details/:articleNumber").get(async (req, res) => {
 	}
 });
 
-
 // GET PRODUCTS BY CATEGORY
-controller.route("/categories/category/:category").get(async (req, res) => {
-	const list = await productSchema.find({ category: req.params.category });
-	const products = [];
+controller
+	.route("/categories/category/:category/:limit")
+	.get(async (req, res) => {
+		const list = await productSchema
+			.find({ category: req.params.category })
+			.limit(req.params.limit);
+		const products = [];
 
-	if (list) {
-		for (let product of list) {
-			products.push({
-				articleNumber: product._id,
-				name: product.name,
-				tag: product.tag,
-				category: product.category,
-				description: product.description,
-				rating: product.rating,
-				price: product.price,
-				imageName: product.imageName,
-			});
+		if (list) {
+			for (let product of list) {
+				products.push({
+					articleNumber: product._id,
+					name: product.name,
+					tag: product.tag,
+					category: product.category,
+					description: product.description,
+					rating: product.rating,
+					price: product.price,
+					imageName: product.imageName,
+				});
+			}
+			res.status(200).json(products);
+		} else {
+			res.status(404).json();
 		}
-		res.status(200).json(products);
-	} else {
-		res.status(404).json();
-	}
-});
+	});
 
 //secured routes (update, delete, create)
 
@@ -203,7 +206,7 @@ controller.route("/product/details/:articleNumber").put(async (req, res) => {
 
 controller.route("/product/details/:articleNumber").delete(async (req, res) => {
 	if (!req.params.articleNumber) {
-		res.status(400).json("Didt find any article number");
+		res.status(400).json("Did not find any article number");
 	} else {
 		const item = productSchema.findById(req.params.articleNumber);
 		if (item) {
@@ -222,8 +225,5 @@ controller.route("/product/details/:articleNumber").delete(async (req, res) => {
 		}
 	}
 });
-
-
-
 
 module.exports = controller;
