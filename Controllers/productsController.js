@@ -118,7 +118,33 @@ controller.route("/product/details/:articleNumber").get(async (req, res) => {
 	}
 });
 
-// GET PRODUCTS BY CATEGORY
+// GET PRODUCTS BY CATEGORY and limit
+controller
+	.route("/categories/category/:category")
+	.get(async (req, res) => {
+		const list = await productSchema
+			.find({ category: req.params.category })
+		const products = [];
+
+		if (list) {
+			for (let product of list) {
+				products.push({
+					articleNumber: product._id,
+					name: product.name,
+					tag: product.tag,
+					category: product.category,
+					description: product.description,
+					rating: product.rating,
+					price: product.price,
+					imageName: product.imageName,
+				});
+			}
+			res.status(200).json(products);
+		} else {
+			res.status(404).json();
+		}
+	});
+
 controller
 	.route("/categories/category/:category/:limit")
 	.get(async (req, res) => {
@@ -171,9 +197,9 @@ controller.route("/").post(async (req, res) => {
 			imageName,
 		});
 		if (product) {
-			res.status(201).json(product);
+			return res.status(201).json(product);
 		} else {
-			res.status(400).json("Something went wrong");
+			return res.status(400).json("Something went wrong");
 		}
 	}
 });
