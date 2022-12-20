@@ -19,6 +19,8 @@ const productsController = require("./Controllers/productsController");
 app.use("/api/products", productsController); //! endpoint plus controller
 const contactFormController = require('./Controllers/contactFormController')
 app.use("/api/contactform", contactFormController);
+const authController = require('./Controllers/authController.')
+app.use("/api/authentication", authController)
 
 //! startar upp apin..
 mongodb();

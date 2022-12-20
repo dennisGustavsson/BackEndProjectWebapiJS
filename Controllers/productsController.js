@@ -1,8 +1,8 @@
 const express = require("express");
+const { authorize } = require("../Middlewares/authorization");
 const controller = express.Router();
 const productSchema = require("../Schemas/productSchema"); //istället för simulerad data
-// let products = require("../Data/simulated_database");
-// const products = require("../Data/simulated_database");
+
 
 // //! middlware
 // controller.param("articleNumber", (req, res, next, articleNumber) => {
@@ -175,7 +175,7 @@ controller
 //secured routes (update, delete, create)
 
 // CREATE NEW PRODUCT
-controller.route("/").post(async (req, res) => {
+controller.route("/").post(authorize,async (req, res) => {
 	const { name, tag, category, description, rating, price, imageName } =
 		req.body;
 	if (!name || !price) {
@@ -206,7 +206,7 @@ controller.route("/").post(async (req, res) => {
 
 // UPDATE SPECIFIC PRODUKT
 
-controller.route("/product/details/:articleNumber").put(async (req, res) => {
+controller.route("/product/details/:articleNumber").put(authorize, async (req, res) => {
 	const item = await productSchema.findById(req.params.articleNumber);
 
 	if (!item) {
@@ -230,7 +230,7 @@ controller.route("/product/details/:articleNumber").put(async (req, res) => {
 
 // DELETE SPECIFIC PRODUKT
 
-controller.route("/product/details/:articleNumber").delete(async (req, res) => {
+controller.route("/product/details/:articleNumber").delete(authorize, async (req, res) => {
 	if (!req.params.articleNumber) {
 		res.status(400).json("Did not find any article number");
 	} else {
