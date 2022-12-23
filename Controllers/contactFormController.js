@@ -2,6 +2,8 @@ const express = require("express");
 const controller = express.Router();
 const contactSchema = require("../Schemas/contactSchema");
 
+// Get and post for contactform
+
 controller.route("/").post(async (req, res) => {
 	const { name, email, comments } = req.body;
 
@@ -20,28 +22,9 @@ controller.route("/").post(async (req, res) => {
 });
 
 controller.route("/").get(async (req, res) => {
-	// const comments = [];
-	// const list = await contactSchema.find();
 	contactSchema.find({}).then( (comments) => {
 		res.send(comments);
 	});
-	// if (list) {
-	// for (let product of list) {
-	// 	products.push({
-	// 		articleNumber: product._id,
-	// 		name: product.name,
-	// 		tag: product.tag,
-	// 		category: product.category,
-	// 		description: product.description,
-	// 		rating: product.rating,
-	// 		price: product.price,
-	// 		imageName: product.imageName,
-	// 	});
-	//     res.status(200).json(comments);
-
-	// } else {
-	// 	res.status(400).json();
-	// }
 });
 
 module.exports = controller;

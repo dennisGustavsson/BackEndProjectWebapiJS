@@ -2,7 +2,7 @@ const express = require("express");
 const controller = express.Router();
 const userSchema = require("../Schemas/userSchema");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 const {generateAccessToken} = require("../Middlewares/authorization");
 
 controller.route("/signup").post(async (req, res) => {

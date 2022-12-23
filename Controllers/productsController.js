@@ -4,23 +4,8 @@ const controller = express.Router();
 const productSchema = require("../Schemas/productSchema"); //istället för simulerad data
 
 
-// //! middlware
-// controller.param("articleNumber", (req, res, next, articleNumber) => {
-// 	req.product = products.find((x) => x.articleNumber == articleNumber);
-// 	next();
-// });
-// controller.param("category", (req, res, next, category) => {
-// 	req.products = products.filter((x) => x.category == category);
-// 	next();
-// });
-// //! filter out all specified tags keys from the array ex, featured, flashsale osv
-// controller.param("tag", (req, res, next, tag) => {
-// 	req.products = products.filter((example) => example.tag == tag);
-// 	next();
-// });
 
-//unsecured routes
-//! route / går till products/ (Standard routen)
+
 //! POST - create user - http://localhost:5000/api/products
 
 //GET ALL PRODUCTS
@@ -72,7 +57,7 @@ controller.route("/:tag").get(async (req, res) => {
 	}
 });
 
-// GET BY TAG PLUS LIMIT AMOUNT
+// GET BY TAG AND LIMIT AMOUNT
 
 controller.route("/:tag/:limit").get(async (req, res) => {
 	const list = await productSchema
